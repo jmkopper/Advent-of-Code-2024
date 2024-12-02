@@ -23,8 +23,6 @@ fn is_safe(line: List[Int]) -> Int:
 
 
 fn is_safe2(inout line: List[Int]) -> Int:
-    if is_safe(line):
-        return True
     for i in range(len(line)):
         var t = line.pop(i)
         if is_safe(line):

@@ -91,8 +91,5 @@ fn main() raises:
     with open("input.txt", "r") as f:
         text = f.read().strip().splitlines()
 
-    var p1 = part1(text)
-    var p2 = part2(text)
-
-    print("Part 1: ", p1)
-    print("Part 2: ", p2)
+    print("Part 1: ", part1(text))
+    print("Part 2: ", part2(text))

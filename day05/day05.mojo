@@ -1,4 +1,4 @@
-from collections import Dict, Set
+from collections import Dict
 
 alias Ordering = Dict[Int, List[Int]]
 

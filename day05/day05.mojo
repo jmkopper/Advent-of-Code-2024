@@ -1,19 +1,29 @@
-from collections import Dict
-
-alias Ordering = Dict[Int, List[Int]]
+from collections import Dict, Set
 
 
-fn parse_order_data(order_data: List[String]) raises -> Ordering:
-    var res = Ordering()
+@value
+struct Lt(CollectionElement, KeyElement):
+    var left: Int
+    var right: Int
+
+    fn __eq__(self, other: Self) -> Bool:
+        return (self.left == other.left) and (self.right == other.right)
+
+    fn __hash__(self) -> UInt:
+        return hash(self.left) ^ hash(self.right)
+
+    fn __ne__(self, other: Self) -> Bool:
+        return (self.left != other.left) or (self.right != other.right)
+
+
+alias Ordering = Set[Lt]
+
+
+fn parse_order_data(order_data: List[String], inout ordering: Ordering) raises:
     for line in order_data:
         var s = line[].split("|")
-        var left = int(s[0])
-        var right = int(s[1])
-        if left in res:
-            res[left].append(right)
-        else:
-            res[left] = List(right)
-    return res
+        var entry = Lt(int(s[0]), int(s[1]))
+        ordering.add(entry)
 
 
 fn parse_update(update_line: String) raises -> List[Int]:
@@ -31,26 +41,21 @@ fn parse_updates(update_lines: List[String]) raises -> List[List[Int]]:
     return res
 
 
-fn is_sorted(update: List[Int], order_dict: Ordering) raises -> Bool:
+fn is_sorted(update: List[Int], ordering: Ordering) -> Bool:
     for i in range(len(update)):
         for j in range(i, len(update)):
             var left = update[i]
             var right = update[j]
-            if right in order_dict:
-                if left in order_dict[right]:
-                    return False
+            if Lt(right, left) in ordering:
+                return False
     return True
 
 
-fn lt(a: Int, b: Int, order_dict: Ordering) raises -> Bool:
-    if a not in order_dict:
-        return False
-    if b in order_dict[a]:
-        return True
-    return False
+fn lt(a: Int, b: Int, ordering: Ordering) -> Bool:
+    return Lt(a, b) in ordering
 
 
-fn qsort(arr: List[Int], order_dict: Ordering) raises -> List[Int]:
+fn qsort(arr: List[Int], ordering: Ordering) -> List[Int]:
     if len(arr) < 2:
         return arr
 
@@ -60,31 +65,31 @@ fn qsort(arr: List[Int], order_dict: Ordering) raises -> List[Int]:
     rights = List[Int]()
 
     for x in arr:
-        if lt(x[], pivot, order_dict):
+        if lt(x[], pivot, ordering):
             lefts.append(x[])
-        elif lt(pivot, x[], order_dict):
+        elif lt(pivot, x[], ordering):
             rights.append(x[])
         else:
             middle.append(x[])
 
-    return qsort(lefts, order_dict) + middle + qsort(rights, order_dict)
+    return qsort(lefts, ordering) + middle + qsort(rights, ordering)
 
 
-fn part1(update_lines: List[List[Int]], order_dict: Ordering) raises -> Int:
+fn part1(update_lines: List[List[Int]], ordering: Ordering) -> Int:
     var s = 0
     for line in update_lines:
-        if is_sorted(line[], order_dict):
+        if is_sorted(line[], ordering):
             var mid = len(line[]) // 2
             s += line[][mid]
     return s
 
 
-fn part2(update_lines: List[List[Int]], order_dict: Ordering) raises -> Int:
+fn part2(update_lines: List[List[Int]], ordering: Ordering) -> Int:
     var s = 0
     for line in update_lines:
-        if is_sorted(line[], order_dict):
+        if is_sorted(line[], ordering):
             continue
-        var sorted_line = qsort(line[], order_dict)
+        var sorted_line = qsort(line[], ordering)
         var mid = len(sorted_line) // 2
         s += sorted_line[mid]
     return s
@@ -98,7 +103,8 @@ fn main() raises:
     var update_data = chunks[1].strip().splitlines()
 
     var updates = parse_updates(update_data)
-    var order_dict = parse_order_data(order_data)
+    var ordering = Ordering()
+    parse_order_data(order_data, ordering)
 
-    print("Part 1: ", part1(updates, order_dict))
-    print("Part 2: ", part2(updates, order_dict))
+    print("Part 1: ", part1(updates, ordering))
+    print("Part 2: ", part2(updates, ordering))

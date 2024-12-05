@@ -81,9 +81,7 @@ fn part1(update_lines: List[List[Int]], order_dict: Ordering) raises -> Int:
 
 fn part2(update_lines: List[List[Int]], order_dict: Ordering) raises -> Int:
     var s = 0
-    var i = 0
     for line in update_lines:
-        i += 1
         if is_sorted(line[], order_dict):
             continue
         var sorted_line = qsort(line[], order_dict)

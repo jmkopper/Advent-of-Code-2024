@@ -1,4 +1,4 @@
-from collections import Dict, Set
+from collections import Set
 
 
 @value
@@ -51,10 +51,6 @@ fn is_sorted(update: List[Int], ordering: Ordering) -> Bool:
     return True
 
 
-fn lt(a: Int, b: Int, ordering: Ordering) -> Bool:
-    return Lt(a, b) in ordering
-
-
 fn qsort(arr: List[Int], ordering: Ordering) -> List[Int]:
     if len(arr) < 2:
         return arr
@@ -65,9 +61,9 @@ fn qsort(arr: List[Int], ordering: Ordering) -> List[Int]:
     rights = List[Int]()
 
     for x in arr:
-        if lt(x[], pivot, ordering):
+        if Lt(x[], pivot) in ordering:
             lefts.append(x[])
-        elif lt(pivot, x[], ordering):
+        elif Lt(pivot, x[]) in ordering:
             rights.append(x[])
         else:
             middle.append(x[])

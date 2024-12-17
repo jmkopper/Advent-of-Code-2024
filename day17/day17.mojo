@@ -1,6 +1,3 @@
-from collections import Dict
-
-
 fn parse_instructions(text: String) raises -> List[Int]:
     var instructions = List[Int]()
     var s = text.strip().split(": ")[1].split(",")

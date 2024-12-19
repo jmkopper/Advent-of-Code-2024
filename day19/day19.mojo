@@ -1,4 +1,4 @@
-from collections import Dict, Set
+from collections import Dict
 
 
 fn num_possible(

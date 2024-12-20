@@ -65,18 +65,13 @@ fn dijkstra(
     var q = List[Vec2d](start)
     var dist = Dict[Vec2d, Int]()
     dist[start] = 0
-    var level = 1
     while len(q) > 0:
-        var level_size = len(q)
-        while level_size > 0:
-            var u = q.pop()
-            level_size -= 1
-            for n in neighbors(grid, u):
-                if n[] in dist:
-                    continue
-                q.append(n[])
-                dist[n[]] = level
-        level += 1
+        var u = q.pop()
+        for n in neighbors(grid, u):
+            if n[] in dist:
+                continue
+            q.append(n[])
+            dist[n[]] = dist[u] + 1
     return dist
 
 

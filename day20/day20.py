@@ -30,15 +30,13 @@ def dijkstra(grid, start, end):
 
 def count_cheats(grid, num_cheats):
     start = next((r, c) for r in range(len(grid)) for c in range(len(grid[0])) if grid[r][c] == "S")
-    end = next((r, c) for r in range(len(grid)) for c in range(len(grid[0])) if grid[r][c] == "E")
-    dist = dijkstra(grid, start, end)
-    c = 0
-    for k, v in dist.items():
-        for p, d in cheats(grid, k, num_cheats):
-            if p in dist and dist[p] - d >= v + 100:
-                c += 1
-    return c
-
+    dist = dijkstra(grid, start, next((r, c) for r in range(len(grid)) for c in range(len(grid[0])) if grid[r][c] == "E"))
+    
+    return sum(
+        1 for k, v in dist.items() 
+        for p, d in cheats(grid, k, num_cheats) 
+        if p in dist and dist[p] - d >= v + 100
+    )
 
 def main():
     with open("input.txt", "r") as f:

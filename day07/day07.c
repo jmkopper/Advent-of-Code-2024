@@ -3,6 +3,32 @@
 #include <string.h>
 
 
+void read_input(const char* fn, char** input) {
+    FILE* fp = fopen(fn, "r");
+    int n = 0;
+    while (1) {
+        char c = fgetc(fp);
+        if (c == EOF)
+            break;
+        n++;
+    }
+    rewind(fp);
+    *input = malloc(sizeof(char) * (n+1));
+
+    int i = 0;
+    while(i < n) {
+        char c = fgetc(fp);
+        if (c == EOF)
+            break;
+
+        (*input)[i++] = c;
+    }
+
+    (*input)[i] = '\0';
+
+    fclose(fp);
+}
+
 int next_power_of_10(long n) {
     if (n < 10) {
         return 10;
@@ -53,7 +79,7 @@ void parse(long* p1, long* p2, char* buffer) {
     *p2 = 0;
 
     // using a fixed-size array big enough to hold everything
-    long res[30];
+    long res[100];
     long target;
 
     char* endptr;
@@ -100,25 +126,7 @@ void parse(long* p1, long* p2, char* buffer) {
 void main() {
     char* buffer = 0;
     long length;
-
-    FILE* f = fopen("input.txt", "rb");
-
-    if (f) {
-        fseek(f, 0, SEEK_END);
-        length = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        buffer = malloc(length) + 1; // +1 for null-termination
-        if (buffer) {
-            fread(buffer, 1, length, f);
-        }
-
-        fclose(f);
-        buffer[length] = '\0'; // fread doesn't add \0 on its own
-    }
-
-    if (!buffer) {
-        return;
-    }
+    read_input("input.txt", &buffer);
 
     long p1, p2;
     parse(&p1, &p2, buffer);
